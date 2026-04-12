@@ -1,0 +1,16 @@
+<?xml version='1.0' standalone='yes'?>
+<extension>
+  <name>PLUGIN_RESOLUTION_DISPLAY</name>
+  <module>Plugins::ResolutionDisplay::Plugin</module>
+  <version>0.1.0</version>
+  <defaultState>enabled</defaultState>
+  <creator>LMS Community</creator>
+  <email></email>
+  <homepageURL>https://github.com/CHANGEME/lms-plugin-resolutiondisplay</homepageURL>
+  <description>PLUGIN_RESOLUTION_DISPLAY_DESC</description>
+  <targetApplication>
+    <id>Lyrion Music Server</id>
+    <minVersion>9.0</minVersion>
+    <maxVersion>*</maxVersion>
+  </targetApplication>
+</extension>

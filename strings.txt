@@ -1,0 +1,34 @@
+# String file for ResolutionDisplay plugin
+
+PLUGIN_RESOLUTION_DISPLAY
+	EN	Resolution Display
+
+PLUGIN_RESOLUTION_DISPLAY_DESC
+	EN	Adds title format tokens to display audio source resolution on player displays and screensavers.
+
+PLUGIN_RESOLUTION_DISPLAY_SETTINGS
+	EN	Resolution Display Settings
+
+PLUGIN_RESOLUTION_DISPLAY_SHOW_LOSSLESS
+	EN	Show lossless/lossy indicator
+
+PLUGIN_RESOLUTION_DISPLAY_SHOW_LOSSLESS_DESC
+	EN	Append a lossless indicator (e.g. "24/96 FLAC [L]") to the resolution string.
+
+PLUGIN_RESOLUTION_DISPLAY_SHORT_FORMAT
+	EN	Use short codec names
+
+PLUGIN_RESOLUTION_DISPLAY_SHORT_FORMAT_DESC
+	EN	Use abbreviated codec names (e.g. "FLC" instead of "FLAC", "MP3" instead of "mp3").
+
+PLUGIN_RESOLUTION_DISPLAY_DSD_LABEL
+	EN	DSD rate display style
+
+PLUGIN_RESOLUTION_DISPLAY_DSD_LABEL_DESC
+	EN	How to display DSD sample rates: as multiplier (DSD64, DSD128) or raw rate.
+
+PLUGIN_RESOLUTION_DISPLAY_DSD_MULTIPLIER
+	EN	Multiplier (DSD64)
+
+PLUGIN_RESOLUTION_DISPLAY_DSD_RAW
+	EN	Raw rate (2.8MHz)

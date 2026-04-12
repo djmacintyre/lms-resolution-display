@@ -1,0 +1,40 @@
+[% title = 'PLUGIN_RESOLUTION_DISPLAY_SETTINGS' %]
+[% PROCESS settings/header.html %]
+
+<div class="prefBranch">
+
+	<p><b>[% "PLUGIN_RESOLUTION_DISPLAY_DESC" | string %]</b></p>
+
+	<p>Available title format tokens for use in
+	<b>Settings &gt; Formatting &gt; Title Format</b>:</p>
+	<ul>
+		<li><code>RESOLUTION</code> &mdash; e.g. "24/96 FLAC", "DSD128", "320kbps MP3"</li>
+		<li><code>BITDEPTH</code> &mdash; e.g. "24", "16"</li>
+		<li><code>SAMPLERATE_KHZ</code> &mdash; e.g. "44.1", "96"</li>
+		<li><code>SOURCEFORMAT</code> &mdash; e.g. "FLAC", "MP3"</li>
+	</ul>
+
+	<p>Example: create a title format <code>TITLE (RESOLUTION)</code> and select it
+	in your player's screensaver or Now Playing display settings.</p>
+
+	<hr />
+
+	[% WRAPPER setting
+		title = "PLUGIN_RESOLUTION_DISPLAY_DSD_LABEL"
+		desc  = "PLUGIN_RESOLUTION_DISPLAY_DSD_LABEL_DESC"
+	%]
+		<select name="dsdStyle" id="dsdStyle">
+			<option value="multiplier"
+				[%- IF prefs.dsdStyle == 'multiplier' %] selected="selected"[% END %]>
+				[% "PLUGIN_RESOLUTION_DISPLAY_DSD_MULTIPLIER" | string %]
+			</option>
+			<option value="raw"
+				[%- IF prefs.dsdStyle == 'raw' %] selected="selected"[% END %]>
+				[% "PLUGIN_RESOLUTION_DISPLAY_DSD_RAW" | string %]
+			</option>
+		</select>
+	[% END %]
+
+</div>
+
+[% PROCESS settings/footer.html %]
