@@ -23,8 +23,8 @@ Resolution info works everywhere title formats are used:
 | `BITDEPTH`         | `24`, `16`, `1`                                   | Bit depth only (1 for DSD) |
 | `SAMPLERATE_KHZ`   | `44.1`, `96`, `192`                               | Sample rate in kHz only |
 | `SOURCEFORMAT`     | `FLAC`, `MP3`, `ALAC`, `DSF`                     | Codec name only |
-| `DECODE_RESOLUTION`| `24/192>96 FLAC`, `24/96● FLAC`                  | What the DAC actually receives — see below |
-| `DECODE_RES_SHORT` | `192>96`, `96`, `16/44.1`                         | Compact variant of DECODE_RESOLUTION for narrow displays |
+| `DECODE_RESOLUTION`| `24/192>96 FLAC`, `24/96* FLAC`                  | What the DAC actually receives — see below |
+| `DECODE_RES_SHORT` | `192>96`, `96*`, `24/44*`, `16/44*`              | Compact variant of DECODE_RESOLUTION for narrow displays |
 
 **Important**: `RESOLUTION`, `BITDEPTH`, `SAMPLERATE_KHZ`, and `SOURCEFORMAT` show
 **source file or stream metadata** — the resolution as reported by the file or streaming
@@ -44,11 +44,10 @@ receives 96kHz.
 | Situation | `RESOLUTION` | `DECODE_RESOLUTION` |
 |-----------|-------------|---------------------|
 | 24/192, player limit 96kHz | `24/192 FLAC` | `24/192>96 FLAC` |
-| 24/96, player limit 96kHz | `24/96 FLAC` | `24/96● FLAC` |
-| 24/44.1, any player | `24/44.1 FLAC` | `24/44.1● FLAC` |
+| 24/96, player limit 96kHz | `24/96 FLAC` | `24/96* FLAC` |
+| 24/44.1, any player | `24/44.1 FLAC` | `24/44.1* FLAC` |
 
-The `●` symbol indicates bit-perfect delivery (source rate ≤ player limit). On VFD
-displays that cannot render Unicode, it falls back to `*`.
+The `*` symbol indicates bit-perfect delivery (source rate ≤ player limit).
 
 ### Frequency family correction
 
@@ -64,16 +63,18 @@ A compact variant designed for narrow VFD overlays (e.g. SB3 Classic 40-char dis
 | Source | Player limit | Output |
 |--------|-------------|--------|
 | 24/192 FLAC | 96kHz | `192>96` |
-| 24/96 FLAC | 96kHz | `96` |
-| 16/44.1 FLAC | any | `16/44.1` |
-| 24/88.2 FLAC | 48kHz | `88.2>44.1` |
+| 24/96 FLAC | 96kHz | `96*` |
+| 24/44.1 FLAC | any | `24/44*` |
+| 16/44.1 FLAC | any | `16/44*` |
+| 24/88.2 FLAC | ≥88.2kHz | `88*` |
+| 24/88.2 FLAC | 48kHz | `88>44` |
 | DSD128 | — | `D128` |
 | 320kbps MP3 | — | `320k` |
 
 Format rules:
-- PCM: rate in kHz; `>decoded` appended only when downsampling occurs
-- `16/` prefix shown only for 16-bit content (flags CD-quality material)
-- Bit-perfect delivery is indicated by **absence of `>`** — no symbol needed
+- PCM: rate in kHz; `*` appended for bit-perfect, `>decoded` when downsampling
+- At 44.1kHz only: `{depth}/44` prefix shown (the one rate where 16-bit is common)
+- 44.1kHz-family rates (88.2, 176.4, 352.8kHz) displayed as integers (88, 176, 352)
 - DSD: compact multiplier (`D64`, `D128`, `D256`)
 - Lossy: bitrate with `k` suffix (`320k`, `128k`)
 

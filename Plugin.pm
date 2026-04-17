@@ -7,8 +7,9 @@ package Plugins::ResolutionDisplay::Plugin;
 #   BITDEPTH          - "24" (bit depth only)
 #   SAMPLERATE_KHZ    - "96" or "44.1" (sample rate in kHz)
 #   SOURCEFORMAT      - "FLAC" or "MP3" or "DSF" (codec name only)
-#   DECODE_RESOLUTION - "24/96● FLAC" (bit-perfect) or "24/192>96 FLAC" (downsampled)
-#   DECODE_RES_SHORT  - "96" (bit-perfect) or "192>96" (downsampled) -- compact, SB3-friendly
+#   DECODE_RESOLUTION - "24/96* FLAC" (bit-perfect) or "24/192>96 FLAC" (downsampled)
+#   DECODE_RES_SHORT  - "96*" (bit-perfect) or "192>96" (downsampled) -- compact, SB3-friendly
+#                       "24/44*" / "16/44*" at 44.1kHz (only rate where 16-bit is common)
 #
 # These tokens can be used in:
 #   - Server Settings > Formatting > Title Format definitions
@@ -60,10 +61,6 @@ my %CODEC_NAMES = (
 # DSD base rate for multiplier calculation
 use constant DSD_BASE_RATE => 2822400;
 
-# U+25CF BLACK CIRCLE -- used as bit-perfect indicator in DECODE_RESOLUTION.
-# Falls back gracefully to '*' if the VFD character set has no mapping for it.
-use constant BITPERFECT_SYMBOL => "\x{25CF}";
-use constant BITPERFECT_FALLBACK => '*';
 
 sub initPlugin {
 	my $class = shift;
@@ -256,7 +253,7 @@ sub _formatDecodeResolution {
 		}
 
 		# Bit-perfect
-		return "${samplesize}/${srcStr}" . BITPERFECT_SYMBOL . " ${codec}";
+		return "${samplesize}/${srcStr}* ${codec}";
 	}
 
 	# Lossy: show bitrate + codec (same as RESOLUTION)
@@ -280,13 +277,14 @@ sub _formatDecodeResolution {
 #
 # Compact variant of DECODE_RESOLUTION for narrow displays (e.g. SB3 Classic).
 # Rules:
-#   - PCM: rate in kHz only; prefix "16/" only for 16-bit content (CD quality)
-#       bit-perfect:  "192"      or "16/44.1"   (no indicator -- clean display)
-#       downsampled:  "192>96"   or "16/44.1>XX" (> signals the abnormal case)
-#   - DSD: compact multiplier prefix -- "D64", "D128", "D256"
-#   - Lossy: bitrate in kHz -- "320k"
-#   Bit-perfect is indicated by absence of '>'. This avoids symbol rendering
-#   issues on VFD displays that lack Unicode support.
+#   - PCM 44.1kHz: show "{depth}/44" prefix -- the only rate where 16-bit is common
+#       bit-perfect:  "24/44*"  "16/44*"
+#       downsampled:  "24/44>XX" (unusual -- 44.1kHz fits any player)
+#   - PCM other rates: rate only (implied 24-bit)
+#       bit-perfect:  "96*"  "192*"
+#       downsampled:  "192>96"
+#   - DSD: compact multiplier -- "D64", "D128", "D256"
+#   - Lossy: bitrate with k suffix -- "320k"
 sub _formatDecodeResShort {
 	my $track = shift;
 	return '' unless $track;
@@ -304,11 +302,21 @@ sub _formatDecodeResShort {
 	}
 
 	if ($samplerate && $samplesize) {
-		my $srcStr = _rateToKHz($samplerate);
 		my $maxRate = _playerMaxRate($track, $samplerate);
 
-		# Show bit depth prefix only for 16-bit (flags CD-quality content)
-		my $prefix = ($samplesize == 16) ? "16/" : "";
+		# 44.1kHz family (44.1, 88.2, 176.4, 352.8): truncate decimal to integer.
+		# Only at exactly 44.1kHz show "{depth}/" prefix -- the one rate where 16-bit is common.
+		my ($prefix, $srcStr);
+		if ($samplerate == 44100) {
+			$prefix = "${samplesize}/";
+			$srcStr = "44";
+		} elsif ($samplerate % 11025 == 0) {
+			$prefix = "";
+			$srcStr = int($samplerate / 1000);  # 88200->88, 176400->176, 352800->352
+		} else {
+			$prefix = "";
+			$srcStr = _rateToKHz($samplerate);
+		}
 
 		if (!defined $maxRate) {
 			return "${prefix}${srcStr}";
@@ -319,12 +327,14 @@ sub _formatDecodeResShort {
 			if (($maxRate % 12000) == 0 && ($samplerate % 11025) == 0) {
 				$decodeRate = int($maxRate * 11025 / 12000);
 			}
-			my $decStr = _rateToKHz($decodeRate);
+			my $decStr = ($decodeRate % 11025 == 0)
+				? int($decodeRate / 1000)
+				: _rateToKHz($decodeRate);
 			return "${prefix}${srcStr}>${decStr}";
 		}
 
-		# Bit-perfect -- no indicator; absence of '>' is the signal
-		return "${prefix}${srcStr}";
+		# Bit-perfect
+		return "${prefix}${srcStr}*";
 	}
 
 	# Lossy: compact bitrate with k suffix
@@ -556,7 +566,7 @@ Available tokens for use in Server Settings > Formatting > Title Format:
   BITDEPTH          - Bit depth only: "24", "16", "1" (for DSD)
   SAMPLERATE_KHZ    - Sample rate in kHz: "44.1", "96", "192"
   SOURCEFORMAT      - Codec name: "FLAC", "MP3", "ALAC"
-  DECODE_RESOLUTION - Source vs decode: "24/96● FLAC" (bit-perfect),
+  DECODE_RESOLUTION - Source vs decode: "24/96* FLAC" (bit-perfect),
                       "24/192>96 FLAC" (downsampled by LMS for this player)
 
 Example title format definitions:
