@@ -32,3 +32,27 @@ PLUGIN_RESOLUTION_DISPLAY_DSD_MULTIPLIER
 
 PLUGIN_RESOLUTION_DISPLAY_DSD_RAW
 	EN	Raw rate (2.8MHz)
+
+PLUGIN_RESOLUTION_DISPLAY_SIGNAL_WARN_PCT
+	EN	Signal warn threshold (%)
+
+PLUGIN_RESOLUTION_DISPLAY_SIGNAL_WARN_PCT_DESC
+	EN	HEALTH token shows degraded (◐ or !) when wireless signal drops below this percentage. Default: 40.
+
+PLUGIN_RESOLUTION_DISPLAY_SIGNAL_GOOD_PCT
+	EN	Signal good threshold (%)
+
+PLUGIN_RESOLUTION_DISPLAY_SIGNAL_GOOD_PCT_DESC
+	EN	HEALTH token shows good (● or OK) when wireless signal is at or above this percentage. Default: 60.
+
+PLUGIN_RESOLUTION_DISPLAY_BUFFER_WARN_PCT
+	EN	Buffer warn threshold (%)
+
+PLUGIN_RESOLUTION_DISPLAY_BUFFER_WARN_PCT_DESC
+	EN	HEALTH token shows degraded (◐ or !) when decode buffer fullness drops below this percentage. Default: 50.
+
+PLUGIN_RESOLUTION_DISPLAY_HEALTH_GLYPHS
+	EN	Use Unicode glyphs for health indicators
+
+PLUGIN_RESOLUTION_DISPLAY_HEALTH_GLYPHS_DESC
+	EN	Use Unicode glyphs (●◐○ and ▁▂▃▄▅▆▇█) for HEALTH and SIGNAL_BARS tokens. Disable for ASCII fallback (OK/!/!! and .:iI#) if your display cannot render them.

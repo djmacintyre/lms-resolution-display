@@ -2,7 +2,7 @@
 <extension>
   <name>PLUGIN_RESOLUTION_DISPLAY</name>
   <module>Plugins::ResolutionDisplay::Plugin</module>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
   <defaultState>enabled</defaultState>
   <creator>LMS Community</creator>
   <email></email>

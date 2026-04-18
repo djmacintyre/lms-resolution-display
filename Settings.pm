@@ -17,7 +17,7 @@ sub page {
 }
 
 sub prefs {
-	return ($prefs, qw(showLossless shortFormat dsdStyle));
+	return ($prefs, qw(showLossless shortFormat dsdStyle signalWarnPct signalGoodPct bufferWarnPct healthGlyphs));
 }
 
 1;

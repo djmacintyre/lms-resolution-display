@@ -12,6 +12,13 @@
 		<li><code>BITDEPTH</code> &mdash; e.g. "24", "16"</li>
 		<li><code>SAMPLERATE_KHZ</code> &mdash; e.g. "44.1", "96"</li>
 		<li><code>SOURCEFORMAT</code> &mdash; e.g. "FLAC", "MP3"</li>
+		<li><code>DECODE_RESOLUTION</code> &mdash; e.g. "24/96* FLAC" (bit-perfect), "24/192&gt;96 FLAC" (downsampled)</li>
+		<li><code>DECODE_RES_SHORT</code> &mdash; e.g. "96*", "192&gt;96", "D128", "320k"</li>
+		<li><code>SIGNAL_PCT</code> &mdash; e.g. "87%" (wireless signal strength, empty for wired)</li>
+		<li><code>SIGNAL_BARS</code> &mdash; single-char bar: "&#x2584;" (glyph) or ":" (ASCII)</li>
+		<li><code>BUFFER_PCT</code> &mdash; e.g. "95%" (decode buffer fullness)</li>
+		<li><code>HEALTH</code> &mdash; "&#x25CF;" good / "&#x25D0;" degraded / "&#x25CB;" bad (or OK / ! / !!)</li>
+		<li><code>HEALTH_LINE</code> &mdash; e.g. "W87 B95" (signal + buffer, 7 chars)</li>
 	</ul>
 
 	<p>Example: create a title format <code>TITLE (RESOLUTION)</code> and select it
@@ -33,6 +40,40 @@
 				[% "PLUGIN_RESOLUTION_DISPLAY_DSD_RAW" | string %]
 			</option>
 		</select>
+	[% END %]
+
+	<hr />
+
+	[% WRAPPER setting
+		title = "PLUGIN_RESOLUTION_DISPLAY_HEALTH_GLYPHS"
+		desc  = "PLUGIN_RESOLUTION_DISPLAY_HEALTH_GLYPHS_DESC"
+	%]
+		<input type="checkbox" name="healthGlyphs" id="healthGlyphs" value="1"
+			[%- IF prefs.healthGlyphs %] checked="checked"[% END %] />
+	[% END %]
+
+	[% WRAPPER setting
+		title = "PLUGIN_RESOLUTION_DISPLAY_SIGNAL_WARN_PCT"
+		desc  = "PLUGIN_RESOLUTION_DISPLAY_SIGNAL_WARN_PCT_DESC"
+	%]
+		<input type="number" name="signalWarnPct" id="signalWarnPct" min="0" max="100"
+			value="[% prefs.signalWarnPct %]" size="4" />
+	[% END %]
+
+	[% WRAPPER setting
+		title = "PLUGIN_RESOLUTION_DISPLAY_SIGNAL_GOOD_PCT"
+		desc  = "PLUGIN_RESOLUTION_DISPLAY_SIGNAL_GOOD_PCT_DESC"
+	%]
+		<input type="number" name="signalGoodPct" id="signalGoodPct" min="0" max="100"
+			value="[% prefs.signalGoodPct %]" size="4" />
+	[% END %]
+
+	[% WRAPPER setting
+		title = "PLUGIN_RESOLUTION_DISPLAY_BUFFER_WARN_PCT"
+		desc  = "PLUGIN_RESOLUTION_DISPLAY_BUFFER_WARN_PCT_DESC"
+	%]
+		<input type="number" name="bufferWarnPct" id="bufferWarnPct" min="0" max="100"
+			value="[% prefs.bufferWarnPct %]" size="4" />
 	[% END %]
 
 </div>

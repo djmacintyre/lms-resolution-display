@@ -17,6 +17,8 @@ Resolution info works everywhere title formats are used:
 
 ## Available tokens
 
+### Audio resolution (v0.1)
+
 | Token              | Example output                                    | Notes |
 |--------------------|---------------------------------------------------|-------|
 | `RESOLUTION`       | `24/96 FLAC`, `DSD128`, `320kbps MP3`            | Source resolution — bit depth, rate, codec |
@@ -25,6 +27,24 @@ Resolution info works everywhere title formats are used:
 | `SOURCEFORMAT`     | `FLAC`, `MP3`, `ALAC`, `DSF`                     | Codec name only |
 | `DECODE_RESOLUTION`| `24/192>96 FLAC`, `24/96* FLAC`                  | What the DAC actually receives — see below |
 | `DECODE_RES_SHORT` | `192>96`, `96*`, `24/44*`, `16/44*`              | Compact variant of DECODE_RESOLUTION for narrow displays |
+
+### Player health (v0.2)
+
+| Token          | Example output | Chars    | Notes |
+|----------------|----------------|----------|-------|
+| `SIGNAL_PCT`   | `87%`          | 2–4      | Wireless signal strength 0–100%; empty for wired players |
+| `SIGNAL_BARS`  | `▄`            | 1        | Single-char bar glyph (8 levels) or ASCII (5 levels: `.:iI#`) |
+| `BUFFER_PCT`   | `95%`          | 2–4      | Decode buffer fullness |
+| `HEALTH`       | `●`            | 1–3      | Composite: `●` good / `◐` degraded / `○` bad; ASCII: `OK`/`!`/`!!` |
+| `HEALTH_LINE`  | `W87 B95`      | 5–9      | Signal + buffer combo; omits `W` field for wired players |
+
+Health thresholds are configurable in Settings. All health tokens use `nocache=1` so
+they re-evaluate on every display refresh (~5s on MusicInfoSCR).
+
+**Known limitation:** when multiple players are playing the same track,
+`SIGNAL_PCT`/`BUFFER_PCT`/`HEALTH` reflect the first matched client in iteration
+order, not necessarily the player whose VFD is rendering the token. For the common
+case (one player active, others idle) the value is always correct.
 
 **Important**: `RESOLUTION`, `BITDEPTH`, `SAMPLERATE_KHZ`, and `SOURCEFORMAT` show
 **source file or stream metadata** — the resolution as reported by the file or streaming
@@ -104,13 +124,12 @@ Format rules:
    ```
    You should see:
    ```
-   ResolutionDisplay plugin initialised - tokens: RESOLUTION, BITDEPTH, SAMPLERATE_KHZ, SOURCEFORMAT, DECODE_RESOLUTION, DECODE_RES_SHORT
+   ResolutionDisplay plugin initialised - tokens: RESOLUTION, BITDEPTH, SAMPLERATE_KHZ, SOURCEFORMAT, DECODE_RESOLUTION, DECODE_RES_SHORT, SIGNAL_PCT, SIGNAL_BARS, BUFFER_PCT, HEALTH, HEALTH_LINE
    ```
 
-5. Add the tokens you want to use to LMS's title format list:
-   **Settings → Advanced → Formatting → Song Display Formats** — add entries like
-   `DECODE_RESOLUTION` and `DECODE_RES_SHORT` so they appear in display element
-   dropdowns in MusicInfoSCR and similar plugins.
+   The plugin automatically adds all its tokens to LMS's server `titleFormat` list
+   at startup, so they appear in MusicInfoSCR and similar plugin dropdowns without
+   any manual configuration.
 
 ## Usage
 
@@ -167,6 +186,10 @@ Accessible via **Settings → Plugins → Resolution Display**:
 | Setting | Default | Description |
 |---------|---------|-------------|
 | DSD rate display style | Multiplier | Show DSD64/DSD128 or raw 2.8MHz/5.6MHz |
+| Use Unicode glyphs | On | `●◐○` and `▁▂▃▄▅▆▇█` for HEALTH/SIGNAL_BARS; off = `OK/!/!!` and `.:iI#` |
+| Signal warn threshold | 40% | HEALTH degrades to `◐` below this |
+| Signal good threshold | 60% | HEALTH shows `●` at or above this |
+| Buffer warn threshold | 50% | HEALTH degrades to `◐` when buffer is below this |
 
 ## Development
 
